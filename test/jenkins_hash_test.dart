@@ -1,7 +1,8 @@
 import 'package:jenkins_hash/jenkins_hash.dart';
+import 'package:jenkins_hash/src/data/precalculated_jenkins.dart';
 import 'package:test/test.dart';
 
-class TestClass with JenkinsHashEquality {
+class TestClass with JenkinsHash {
   final String value1;
   final List<String>? value2;
 
@@ -16,7 +17,15 @@ class TestClass with JenkinsHashEquality {
   List<Object?> get hashParameters => [value1, value2];
 }
 
-class TestRef with JenkinsHashEquality {
+class ConstTestClass extends JenkinsPrecalculatedHash {
+  final String value1;
+  final List<String>? value2;
+
+  ConstTestClass(this.value1, this.value2)
+      : super(PrecalculatedJenkins.create([value1, value2]));
+}
+
+class TestRef with JenkinsHash {
   final TestClass testClass;
 
   TestRef(this.testClass);
@@ -29,7 +38,7 @@ class TestRef with JenkinsHashEquality {
 }
 
 void main() {
-  group('JenkinsHash', () {
+  group('JenkinsHash Mixin', () {
     test('Simple equals', () {
       final a = TestClass('value1', null, false);
       final b = TestClass('value1', null, false);
@@ -98,6 +107,56 @@ void main() {
       a.value2!.add('add new');
       expect(refA == refB, isTrue);
       expect(refA.hashCode, equals(refB.hashCode));
+    });
+  });
+
+  group('JenkinsHash Precalculated', () {
+    test('Simple equals', () {
+      final a = ConstTestClass('value1', null);
+      final b = ConstTestClass('value1', null);
+
+      expect(a == b, isTrue);
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('Simple unequals', () {
+      final a = ConstTestClass('value1', null);
+      final b = ConstTestClass('value2', null);
+
+      expect(a == b, isFalse);
+    });
+
+    test('Simple equals iterable', () {
+      final a = ConstTestClass('value1', ['1', '2']);
+      final b = ConstTestClass('value1', ['1', '2']);
+
+      expect(a == b, isTrue);
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('Simple unequals iterable', () {
+      final a = ConstTestClass('value1', ['1', '2']);
+      final b = ConstTestClass('value1', ['2', '1']);
+
+      expect(a == b, isFalse);
+      expect(a.hashCode, isNot(b.hashCode));
+    });
+
+    test('Equals null', () {
+      final a = ConstTestClass('value1', null);
+      final b = ConstTestClass('value1', []);
+
+      expect(a == b, isFalse);
+    });
+
+    test('Cache hashcode', () {
+      final a = ConstTestClass('value1', []);
+      final b = ConstTestClass('value1', []);
+
+      expect(a == b, isTrue);
+      b.value2!.add('this is bad');
+      expect(a == b, isTrue);
+      expect(a.hashCode, equals(b.hashCode));
     });
   });
 }
