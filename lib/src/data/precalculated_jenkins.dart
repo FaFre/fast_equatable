@@ -12,9 +12,9 @@ class PrecalculatedJenkins {
         (other is PrecalculatedJenkins && hashCode == other.hashCode);
   }
 
-  const PrecalculatedJenkins._(this.hashParameters, this.hashCode);
+  const PrecalculatedJenkins(this.hashParameters, this.hashCode);
 
   factory PrecalculatedJenkins.create(List<Object?> hashParameters) =>
-      PrecalculatedJenkins._(
+      PrecalculatedJenkins(
           hashParameters, Jenkins.calculateHash(hashParameters));
 }
