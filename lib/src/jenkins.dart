@@ -13,15 +13,16 @@ class Jenkins {
 
   void add(Object? o) {
     assert(o is! Iterable);
-    _hash = 0x1fffffff & (_hash + o.hashCode);
-    _hash = 0x1fffffff & (_hash + ((0x0007ffff & _hash) << 10));
-    _hash = _hash ^ (_hash >> 6);
+
+    _hash = (_hash + o.hashCode) & 0x7fffffff;
+    _hash = (_hash + (_hash << 10)) & 0x7fffffff;
+    _hash ^= (_hash >> 6);
   }
 
   int finish() {
-    _hash = 0x1fffffff & (_hash + ((0x03ffffff & _hash) << 3));
-    _hash = _hash ^ (_hash >> 11);
-    _hash = 0x1fffffff & (_hash + ((0x00003fff & _hash) << 15));
+    _hash = (_hash + (_hash << 3)) & 0x7fffffff;
+    _hash ^= (_hash >> 11);
+    _hash = (_hash + (_hash << 15)) & 0x7fffffff;
     return _hash;
   }
 
