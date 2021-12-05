@@ -3,14 +3,27 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:jenkins_hash/jenkins_hash.dart';
 
-class TestClassJenkins with JenkinsHash {
+class TestClassJenkinsCached with JenkinsHash {
   final String value1;
   final List<String>? value2;
 
-  TestClassJenkins(this.value1, this.value2);
+  TestClassJenkinsCached(this.value1, this.value2);
 
   @override
   bool get cacheHash => true;
+
+  @override
+  List<Object?> get hashParameters => [value1, value2];
+}
+
+class TestClassJenkinsUncached with JenkinsHash {
+  final String value1;
+  final List<String>? value2;
+
+  TestClassJenkinsUncached(this.value1, this.value2);
+
+  @override
+  bool get cacheHash => false;
 
   @override
   List<Object?> get hashParameters => [value1, value2];
@@ -31,14 +44,13 @@ void main(List<String> args) {
   const NAcc = 1000000;
 
   final rand = Random();
+  final randsVal1 = List.generate(NAcc, (_) => rand.nextInt(NAcc).toString());
+  final randsVal2 = List.generate(NAcc, (_) => rand.nextInt(NAcc).toString());
+
   final randEquatable = List.generate(
-      NAcc,
-      (i) => TestClassEquatable(
-          rand.nextInt(NAcc).toString(), [rand.nextInt(NAcc).toString()]));
+      NAcc, (i) => TestClassEquatable(randsVal1[i], [randsVal2[i]]));
   final randEquatableB = List.generate(
-      NAcc,
-      (i) => TestClassJenkins(
-          rand.nextInt(NAcc).toString(), [rand.nextInt(NAcc).toString()]));
+      NAcc, (i) => TestClassJenkinsCached(randsVal1[i], [randsVal2[i]]));
 
   var s = Stopwatch()..start();
   final set = <TestClassEquatable>{};
@@ -52,13 +64,14 @@ void main(List<String> args) {
   }
 
   s.stop();
-  print('Equatable took ${s.elapsedMilliseconds}');
+  print(
+      'Equatable took for Set<> with ${set.length} elements ${s.elapsedMilliseconds}ms');
 
   s = Stopwatch()..start();
-  final setB = <TestClassJenkins>{};
+  final setB = <TestClassJenkinsCached>{};
 
   for (var i = 0; i < N; i++) {
-    setB.add(TestClassJenkins(i.toString(), [i.toString()]));
+    setB.add(TestClassJenkinsCached(i.toString(), [i.toString()]));
   }
 
   for (var i = 0; i < NAcc; i++) {
@@ -66,5 +79,8 @@ void main(List<String> args) {
   }
 
   s.stop();
-  print('Jenkins took ${s.elapsedMilliseconds}');
+  print(
+      'Jenkins took for Set<> with ${setB.length} elements ${s.elapsedMilliseconds}ms');
+
+  s = Stopwatch()..start();
 }
