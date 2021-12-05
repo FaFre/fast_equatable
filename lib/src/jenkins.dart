@@ -44,7 +44,9 @@ class Jenkins {
 
   static bool equals(IJenkinsHash main, IJenkinsHash other) {
     if (main.cacheHash || other.cacheHash) {
-      return main.hashCode == other.hashCode;
+      return main.hashCode == other.hashCode &&
+          (!(main.cacheAdditionalEquality && other.cacheAdditionalEquality) ||
+              _deepEquality.equals(main.hashParameters, other.hashParameters));
     }
 
     final params = main.hashParameters;
@@ -58,9 +60,7 @@ class Jenkins {
       final b = otherParams[i];
 
       if (a is IJenkinsHash && b is IJenkinsHash) {
-        if (a.cacheHash || b.cacheHash) {
-          return a.hashCode == b.hashCode;
-        } else if (a != b) return false;
+        return equals(a, b);
       } else if (_deepEquality.isValidKey(a)) {
         if (!_deepEquality.equals(a, b)) return false;
       } else if (a?.runtimeType != b?.runtimeType) {

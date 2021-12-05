@@ -5,6 +5,9 @@ mixin JenkinsHash implements IJenkinsHash {
   int? _cachedHash;
 
   @override
+  final bool cacheAdditionalEquality = true;
+
+  @override
   int get hashCode {
     if (cacheHash) {
       _cachedHash ??= Jenkins.calculateHash(hashParameters);
