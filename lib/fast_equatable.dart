@@ -1,9 +1,9 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library jenkins_hash;
+library fast_equatable;
 
-export 'src/jenkins_hash.dart';
+export 'src/fast_equatable.dart';
 export 'src/jenkins_hash_engine.dart';
 export 'src/i_hash_engine.dart';
 

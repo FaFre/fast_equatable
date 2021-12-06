@@ -14,5 +14,5 @@ dev_dependencies:
   pedantic: ^1.10.0
 dependencies:
   equatable: ^2.0.3
-  jenkins_hash:
+  fast_equatable:
     path: ../

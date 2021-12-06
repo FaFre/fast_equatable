@@ -1,7 +1,7 @@
-import 'package:jenkins_hash/jenkins_hash.dart';
+import 'package:fast_equatable/fast_equatable.dart';
 import 'package:test/test.dart';
 
-class TestClass with JenkinsHash {
+class TestClass with FastEquatable {
   final String value1;
   final List<String>? value2;
 
@@ -18,7 +18,7 @@ class TestClass with JenkinsHash {
   List<Object?> get hashParameters => [value1, value2];
 }
 
-class TestRef with JenkinsHash {
+class TestRef with FastEquatable {
   final TestClass testClass;
 
   TestRef(this.testClass);
@@ -31,7 +31,7 @@ class TestRef with JenkinsHash {
 }
 
 void main() {
-  group('JenkinsHash Mixin', () {
+  group('FastEquatable Mixin', () {
     test('Simple equals', () {
       final a = TestClass('value1', null, false, false);
       final b = TestClass('value1', null, false, false);

@@ -1,6 +1,6 @@
-import 'package:jenkins_hash/src/i_hash_engine.dart';
+import 'package:fast_equatable/src/i_hash_engine.dart';
 
-abstract class IJenkinsHash {
+abstract class IFastEquatable {
   /// The additional equality check mitigates hash collisions with an additional
   /// equality check for each parameter. The more parameters the better.
   ///

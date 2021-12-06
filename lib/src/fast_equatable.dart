@@ -1,16 +1,16 @@
-import 'package:jenkins_hash/src/data/i_jenkins_hash.dart';
-import 'package:jenkins_hash/src/equality.dart';
-import 'package:jenkins_hash/src/i_hash_engine.dart';
-import 'package:jenkins_hash/src/jenkins_hash_engine.dart';
+import 'package:fast_equatable/src/data/i_fast_equatable.dart';
+import 'package:fast_equatable/src/equality.dart';
+import 'package:fast_equatable/src/i_hash_engine.dart';
+import 'package:fast_equatable/src/jenkins_hash_engine.dart';
 
-mixin JenkinsHash implements IJenkinsHash {
+mixin FastEquatable implements IFastEquatable {
   int? _cachedHash;
 
   @override
   final bool cacheAdditionalEquality = true;
 
   @override
-  IHashEngine get hashEngine => const JenkinsHashEngine();
+  IHashEngine get hashEngine => const FastEquatableEngine();
 
   @override
   int get hashCode {
@@ -25,7 +25,7 @@ mixin JenkinsHash implements IJenkinsHash {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other is IJenkinsHash &&
+        (other is IFastEquatable &&
             runtimeType == other.runtimeType &&
             fastEquals(this, other));
   }

@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:jenkins_hash/src/data/i_jenkins_hash.dart';
+import 'package:fast_equatable/src/data/i_fast_equatable.dart';
 
 const _deepEquality = DeepCollectionEquality();
 
-bool fastEquals(IJenkinsHash main, IJenkinsHash other) {
+bool fastEquals(IFastEquatable main, IFastEquatable other) {
   if (main.cacheHash || other.cacheHash) {
     return main.hashCode == other.hashCode &&
         (!(main.cacheAdditionalEquality && other.cacheAdditionalEquality) ||
@@ -20,7 +20,7 @@ bool fastEquals(IJenkinsHash main, IJenkinsHash other) {
     final a = params[i];
     final b = otherParams[i];
 
-    if (a is IJenkinsHash && b is IJenkinsHash) {
+    if (a is IFastEquatable && b is IFastEquatable) {
       return fastEquals(a, b);
     } else if (_deepEquality.isValidKey(a)) {
       if (!_deepEquality.equals(a, b)) return false;

@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
-import 'package:jenkins_hash/src/i_hash_engine.dart';
+import 'package:fast_equatable/src/i_hash_engine.dart';
 
 const _deepEquality = DeepCollectionEquality();
 
-class JenkinsHashEngine implements IHashEngine {
-  const JenkinsHashEngine();
+class FastEquatableEngine implements IHashEngine {
+  const FastEquatableEngine();
 
   static int add(int hash, Object? o) {
     assert(o is! Iterable);
