@@ -1,5 +1,6 @@
 import 'package:jenkins_hash/src/data/i_jenkins_hash.dart';
-import 'package:jenkins_hash/src/jenkins.dart';
+import 'package:jenkins_hash/src/i_hash_engine.dart';
+import 'package:jenkins_hash/src/jenkins_hash_engine.dart';
 
 mixin JenkinsHash implements IJenkinsHash {
   int? _cachedHash;
@@ -8,13 +9,16 @@ mixin JenkinsHash implements IJenkinsHash {
   final bool cacheAdditionalEquality = true;
 
   @override
+  IHashEngine get hashEngine => const JenkinsHashEngine();
+
+  @override
   int get hashCode {
     if (cacheHash) {
-      _cachedHash ??= Jenkins.calculateHash(hashParameters);
+      _cachedHash ??= hashEngine.calculateHash(hashParameters);
       return _cachedHash!;
     }
 
-    return Jenkins.calculateHash(hashParameters);
+    return hashEngine.calculateHash(hashParameters);
   }
 
   @override
@@ -22,6 +26,6 @@ mixin JenkinsHash implements IJenkinsHash {
     return identical(this, other) ||
         (other is IJenkinsHash &&
             runtimeType == other.runtimeType &&
-            Jenkins.equals(this, other));
+            JenkinsHashEngine.equals(this, other));
   }
 }

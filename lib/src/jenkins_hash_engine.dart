@@ -1,32 +1,28 @@
 import 'package:collection/collection.dart';
 import 'package:jenkins_hash/src/data/i_jenkins_hash.dart';
+import 'package:jenkins_hash/src/i_hash_engine.dart';
 
 const _deepEquality = DeepCollectionEquality();
 
-// Jenkins hash function, optimized for small integers.
-//
-// Base is borrowed from the dart sdk: sdk/lib/math/jenkins_smi_hash.dart.
-class Jenkins {
-  int _hash = 0;
+class JenkinsHashEngine implements IHashEngine {
+  const JenkinsHashEngine();
 
-  Jenkins();
-
-  void add(Object? o) {
+  static int add(int hash, Object? o) {
     assert(o is! Iterable);
 
-    _hash = (_hash + o.hashCode) & 0x7fffffff;
-    _hash = (_hash + (_hash << 10)) & 0x7fffffff;
-    _hash ^= (_hash >> 6);
+    hash = (hash + o.hashCode) & 0x7fffffff;
+    hash = (hash + (hash << 10)) & 0x7fffffff;
+    return hash ^ (hash >> 6);
   }
 
-  int finish() {
-    _hash = (_hash + (_hash << 3)) & 0x7fffffff;
-    _hash ^= (_hash >> 11);
-    _hash = (_hash + (_hash << 15)) & 0x7fffffff;
-    return _hash;
+  static int finish(int hash) {
+    hash = (hash + (hash << 3)) & 0x7fffffff;
+    hash ^= (hash >> 11);
+    return (hash + (hash << 15)) & 0x7fffffff;
   }
 
-  static int calculateHash(List<Object?> hashParameters) {
+  @override
+  int calculateHash(List<Object?> hashParameters) {
     if (hashParameters.isEmpty) {
       throw ArgumentError.value(
           'No hash parameters provided', '$hashParameters');
@@ -34,12 +30,12 @@ class Jenkins {
       return _deepEquality.hash(hashParameters.first);
     }
 
-    var jenkins = Jenkins();
+    var hash = 0;
     for (final hashParam in hashParameters) {
-      jenkins.add(_deepEquality.hash(hashParam));
+      hash = add(hash, _deepEquality.hash(hashParam));
     }
 
-    return jenkins.finish();
+    return finish(hash);
   }
 
   static bool equals(IJenkinsHash main, IJenkinsHash other) {
