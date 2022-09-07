@@ -48,7 +48,7 @@ class EquatableBenchmark extends BenchmarkBase {
 
   EquatableBenchmark(this._randsValA, this._randsValB)
       : assert(_randsValA.length == _randsValB.length),
-        super('Equatable for ${_randsValA.length} elements');
+        super('equatable for ${_randsValA.length} elements');
 
   @override
   void setup() {
@@ -74,7 +74,7 @@ class FastEquatableUncachedBenchmark extends BenchmarkBase {
 
   FastEquatableUncachedBenchmark(this._randsValA, this._randsValB)
       : assert(_randsValA.length == _randsValB.length),
-        super('Fast Equatable (uncached) for ${_randsValA.length} elements');
+        super('fast_equatable (uncached) for ${_randsValA.length} elements');
 
   @override
   void setup() {
@@ -100,7 +100,7 @@ class FastEquatableCachedBenchmark extends BenchmarkBase {
 
   FastEquatableCachedBenchmark(this._randsValA, this._randsValB)
       : assert(_randsValA.length == _randsValB.length),
-        super('Fast Equatable (cached) for ${_randsValA.length} elements');
+        super('fast_equatable (cached) for ${_randsValA.length} elements');
 
   @override
   void setup() {
