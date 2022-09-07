@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_equatable/fast_equatable.dart';
 
@@ -39,48 +40,92 @@ class TestClassEquatable extends Equatable {
   List<Object?> get props => [value1, value2];
 }
 
+class EquatableBenchmark extends BenchmarkBase {
+  final List<String> _randsValA;
+  final List<String> _randsValB;
+
+  late final List<TestClassEquatable> objects;
+
+  EquatableBenchmark(this._randsValA, this._randsValB)
+      : assert(_randsValA.length == _randsValB.length),
+        super('Equatable for ${_randsValA.length} elements');
+
+  @override
+  void setup() {
+    objects = List.generate(_randsValA.length,
+        (i) => TestClassEquatable(_randsValA[i], [_randsValB[i]]));
+  }
+
+  @override
+  void run() {
+    final set = <TestClassEquatable>{};
+
+    for (final obj in objects) {
+      set.add(obj);
+    }
+  }
+}
+
+class FastEquatableUncachedBenchmark extends BenchmarkBase {
+  final List<String> _randsValA;
+  final List<String> _randsValB;
+
+  late final List<FastEquatableUncached> objects;
+
+  FastEquatableUncachedBenchmark(this._randsValA, this._randsValB)
+      : assert(_randsValA.length == _randsValB.length),
+        super('Fast Equatable (uncached) for ${_randsValA.length} elements');
+
+  @override
+  void setup() {
+    objects = List.generate(_randsValA.length,
+        (i) => FastEquatableUncached(_randsValA[i], [_randsValB[i]]));
+  }
+
+  @override
+  void run() {
+    final set = <FastEquatableUncached>{};
+
+    for (final obj in objects) {
+      set.add(obj);
+    }
+  }
+}
+
+class FastEquatableCachedBenchmark extends BenchmarkBase {
+  final List<String> _randsValA;
+  final List<String> _randsValB;
+
+  late final List<FastEquatableCached> objects;
+
+  FastEquatableCachedBenchmark(this._randsValA, this._randsValB)
+      : assert(_randsValA.length == _randsValB.length),
+        super('Fast Equatable (cached) for ${_randsValA.length} elements');
+
+  @override
+  void setup() {
+    objects = List.generate(_randsValA.length,
+        (i) => FastEquatableCached(_randsValA[i], [_randsValB[i]]));
+  }
+
+  @override
+  void run() {
+    final set = <FastEquatableCached>{};
+
+    for (final obj in objects) {
+      set.add(obj);
+    }
+  }
+}
+
 void main(List<String> args) {
-  const n = 1000000;
   const nAcc = 1000000;
 
   final rand = Random();
   final randsVal1 = List.generate(nAcc, (_) => rand.nextInt(nAcc).toString());
   final randsVal2 = List.generate(nAcc, (_) => rand.nextInt(nAcc).toString());
 
-  final randEquatable = List.generate(
-      nAcc, (i) => TestClassEquatable(randsVal1[i], [randsVal2[i]]));
-  final randEquatableB = List.generate(
-      nAcc, (i) => FastEquatableCached(randsVal1[i], [randsVal2[i]]));
-
-  var s = Stopwatch()..start();
-  final set = <TestClassEquatable>{};
-
-  for (var i = 0; i < n; i++) {
-    set.add(TestClassEquatable(i.toString(), [i.toString()]));
-  }
-
-  for (var i = 0; i < nAcc; i++) {
-    set.add(randEquatable[i]);
-  }
-
-  s.stop();
-  print(
-      'Equatable took for Set<> with ${set.length} elements ${s.elapsedMilliseconds}ms');
-
-  s = Stopwatch()..start();
-  final setB = <FastEquatableCached>{};
-
-  for (var i = 0; i < n; i++) {
-    setB.add(FastEquatableCached(i.toString(), [i.toString()]));
-  }
-
-  for (var i = 0; i < nAcc; i++) {
-    setB.add(randEquatableB[i]);
-  }
-
-  s.stop();
-  print(
-      'FastEquatable took for Set<> with ${setB.length} elements ${s.elapsedMilliseconds}ms');
-
-  s = Stopwatch()..start();
+  EquatableBenchmark(randsVal1, randsVal2).report();
+  FastEquatableUncachedBenchmark(randsVal1, randsVal2).report();
+  FastEquatableCachedBenchmark(randsVal1, randsVal2).report();
 }
