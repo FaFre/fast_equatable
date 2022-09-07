@@ -1,6 +1,6 @@
 name: fast_equatable
 description: A simple Dart package that provides fast and secure equality comparison as a mixin. It optionally offers hash caching to improve the speed of Map's and Set's significantly.
-version: 0.9.0
+version: 0.9.1
 repository: https://github.com/FaFre/fast_equatable
 
 environment:
@@ -11,3 +11,4 @@ dev_dependencies:
   test: ^1.16.0
 dependencies:
   collection: ^1.15.0
+  meta: ^1.8.0
