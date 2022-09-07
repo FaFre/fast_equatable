@@ -6,7 +6,7 @@ const _deepEquality = DeepCollectionEquality();
 bool fastEquals(IFastEquatable main, IFastEquatable other) {
   if (main.cacheHash || other.cacheHash) {
     return main.hashCode == other.hashCode &&
-        (!(main.cacheAdditionalEquality && other.cacheAdditionalEquality) ||
+        (!(main.additionalEqualityCheck && other.additionalEqualityCheck) ||
             _deepEquality.equals(main.hashParameters, other.hashParameters));
   }
 

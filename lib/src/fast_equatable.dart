@@ -7,16 +7,15 @@ mixin FastEquatable implements IFastEquatable {
   int? _cachedHash;
 
   @override
-  final bool cacheAdditionalEquality = true;
+  final bool additionalEqualityCheck = true;
 
   @override
-  IHashEngine get hashEngine => const FastEquatableEngine();
+  IHashEngine get hashEngine => const JenkinsHashEngine();
 
   @override
   int get hashCode {
     if (cacheHash) {
-      _cachedHash ??= hashEngine.calculateHash(hashParameters);
-      return _cachedHash!;
+      return _cachedHash ??= hashEngine.calculateHash(hashParameters);
     }
 
     return hashEngine.calculateHash(hashParameters);

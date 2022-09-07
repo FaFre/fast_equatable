@@ -40,26 +40,26 @@ class TestClassEquatable extends Equatable {
 }
 
 void main(List<String> args) {
-  const N = 1000000;
-  const NAcc = 1000000;
+  const n = 1000000;
+  const nAcc = 1000000;
 
   final rand = Random();
-  final randsVal1 = List.generate(NAcc, (_) => rand.nextInt(NAcc).toString());
-  final randsVal2 = List.generate(NAcc, (_) => rand.nextInt(NAcc).toString());
+  final randsVal1 = List.generate(nAcc, (_) => rand.nextInt(nAcc).toString());
+  final randsVal2 = List.generate(nAcc, (_) => rand.nextInt(nAcc).toString());
 
   final randEquatable = List.generate(
-      NAcc, (i) => TestClassEquatable(randsVal1[i], [randsVal2[i]]));
+      nAcc, (i) => TestClassEquatable(randsVal1[i], [randsVal2[i]]));
   final randEquatableB = List.generate(
-      NAcc, (i) => FastEquatableCached(randsVal1[i], [randsVal2[i]]));
+      nAcc, (i) => FastEquatableCached(randsVal1[i], [randsVal2[i]]));
 
   var s = Stopwatch()..start();
   final set = <TestClassEquatable>{};
 
-  for (var i = 0; i < N; i++) {
+  for (var i = 0; i < n; i++) {
     set.add(TestClassEquatable(i.toString(), [i.toString()]));
   }
 
-  for (var i = 0; i < NAcc; i++) {
+  for (var i = 0; i < nAcc; i++) {
     set.add(randEquatable[i]);
   }
 
@@ -70,11 +70,11 @@ void main(List<String> args) {
   s = Stopwatch()..start();
   final setB = <FastEquatableCached>{};
 
-  for (var i = 0; i < N; i++) {
+  for (var i = 0; i < n; i++) {
     setB.add(FastEquatableCached(i.toString(), [i.toString()]));
   }
 
-  for (var i = 0; i < NAcc; i++) {
+  for (var i = 0; i < nAcc; i++) {
     setB.add(randEquatableB[i]);
   }
 

@@ -3,10 +3,10 @@ import 'package:fast_equatable/src/i_hash_engine.dart';
 
 const _deepEquality = DeepCollectionEquality();
 
-class FastEquatableEngine implements IHashEngine {
-  const FastEquatableEngine();
+class JenkinsHashEngine implements IHashEngine {
+  const JenkinsHashEngine();
 
-  static int add(int hash, Object? o) {
+  static int _add(int hash, Object? o) {
     assert(o is! Iterable);
 
     hash = (hash + o.hashCode) & 0x7fffffff;
@@ -14,7 +14,7 @@ class FastEquatableEngine implements IHashEngine {
     return hash ^ (hash >> 6);
   }
 
-  static int finish(int hash) {
+  static int _finish(int hash) {
     hash = (hash + (hash << 3)) & 0x7fffffff;
     hash ^= (hash >> 11);
     return (hash + (hash << 15)) & 0x7fffffff;
@@ -31,9 +31,9 @@ class FastEquatableEngine implements IHashEngine {
 
     var hash = 0;
     for (final hashParam in hashParameters) {
-      hash = add(hash, _deepEquality.hash(hashParam));
+      hash = _add(hash, _deepEquality.hash(hashParam));
     }
 
-    return finish(hash);
+    return _finish(hash);
   }
 }
