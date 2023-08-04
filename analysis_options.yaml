@@ -2,7 +2,14 @@
 # details and rationale, see
 # https://github.com/dart-lang/pedantic#enabled-lints.
 
-include: package:lints/recommended.yaml
+include: package:lint/package.yaml
+# Uncomment the following section to specify additional rules.
+
+linter:
+  rules:
+    - unawaited_futures
+    - discarded_futures
+    - collection_methods_unrelated_type
 # For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
 
 # Uncomment to specify additional rules.

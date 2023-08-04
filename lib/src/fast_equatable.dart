@@ -13,7 +13,7 @@ mixin FastEquatable implements IFastEquatable {
 
   @override
   @protected
-  IHashEngine get hashEngine => const JenkinsHashEngine();
+  final IHashEngine hashEngine = const JenkinsHashEngine();
 
   @override
   int get hashCode {

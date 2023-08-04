@@ -6,7 +6,11 @@ class TestClass with FastEquatable {
   final List<String>? value2;
 
   TestClass(
-      this.value1, this.value2, this.cacheHash, this.additionalEqualityCheck);
+    this.value1,
+    this.value2,
+    this.cacheHash,
+    this.additionalEqualityCheck,
+  );
 
   @override
   // ignore: overridden_fields
