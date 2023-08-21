@@ -35,6 +35,25 @@ class TestRef with FastEquatable {
   List<Object?> get hashParameters => [testClass];
 }
 
+class TestExtClass extends TestClass {
+  final List<TestClass?> additionalParam;
+
+  TestExtClass(
+    super.value1,
+    super.value2,
+    super.cachedHash,
+    super.additionalEqualityCheck,
+    this.additionalParam,
+  );
+
+  @override
+  bool get cacheHash => false;
+
+  @override
+  List<Object?> get hashParameters =>
+      [...super.hashParameters, additionalParam];
+}
+
 void main() {
   group('FastEquatable Mixin', () {
     test('Simple equals', () {
@@ -116,5 +135,36 @@ void main() {
       expect(refA == refB, isTrue);
       expect(refA.hashCode, equals(refB.hashCode));
     });
+  });
+
+  test('Testing extended classes unequal', () {
+    final a = TestClass('d', [], false, false);
+    final b = TestClass(String.fromCharCode(0x64), [], false, false);
+
+    final c = TestExtClass(
+      String.fromCharCode(0x64),
+      [],
+      false,
+      false,
+      [b],
+    );
+
+    final d = TestExtClass(
+      String.fromCharCode(0x64),
+      [],
+      false,
+      false,
+      [],
+    );
+
+    expect(a == b, isTrue);
+    expect(a.hashCode, equals(b.hashCode));
+
+    expect(c != d, isTrue);
+    expect(c.hashCode != d.hashCode, isTrue);
+
+    d.additionalParam.add(a);
+    expect(c == d, isTrue);
+    expect(c.hashCode, equals(d.hashCode));
   });
 }
