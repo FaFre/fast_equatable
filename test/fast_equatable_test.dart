@@ -5,19 +5,15 @@ class TestClass with FastEquatable {
   final String value1;
   final List<String>? value2;
 
-  TestClass(
+  const TestClass(
     this.value1,
     this.value2,
-    this.cacheHash,
-    this.additionalEqualityCheck,
   );
+  @override
+  bool get cacheHash => false;
 
   @override
-  // ignore: overridden_fields
-  bool additionalEqualityCheck;
-
-  @override
-  bool cacheHash;
+  bool get additionalEqualityCheck => false;
 
   @override
   List<Object?> get hashParameters => [value1, value2];
@@ -26,10 +22,13 @@ class TestClass with FastEquatable {
 class TestRef with FastEquatable {
   final TestClass testClass;
 
-  TestRef(this.testClass);
+  const TestRef(this.testClass);
 
   @override
   bool get cacheHash => false;
+
+  @override
+  bool get additionalEqualityCheck => false;
 
   @override
   List<Object?> get hashParameters => [testClass];
@@ -38,16 +37,17 @@ class TestRef with FastEquatable {
 class TestExtClass extends TestClass {
   final List<TestClass?> additionalParam;
 
-  TestExtClass(
+  const TestExtClass(
     super.value1,
     super.value2,
-    super.cachedHash,
-    super.additionalEqualityCheck,
     this.additionalParam,
   );
 
   @override
   bool get cacheHash => false;
+
+  @override
+  bool get additionalEqualityCheck => false;
 
   @override
   List<Object?> get hashParameters =>
@@ -57,46 +57,46 @@ class TestExtClass extends TestClass {
 void main() {
   group('FastEquatable Mixin', () {
     test('Simple equals', () {
-      final a = TestClass('value1', null, false, false);
-      final b = TestClass('value1', null, false, false);
+      const a = TestClass('value1', null);
+      const b = TestClass('value1', null);
 
       expect(a == b, isTrue);
       expect(a.hashCode, equals(b.hashCode));
     });
 
     test('Simple unequals', () {
-      final a = TestClass('value1', null, false, false);
-      final b = TestClass('value2', null, false, false);
+      const a = TestClass('value1', null);
+      const b = TestClass('value2', null);
 
       expect(a == b, isFalse);
     });
 
     test('Simple equals iterable', () {
-      final a = TestClass('value1', ['1', '2'], false, false);
-      final b = TestClass('value1', ['1', '2'], false, false);
+      const a = TestClass('value1', ['1', '2']);
+      const b = TestClass('value1', ['1', '2']);
 
       expect(a == b, isTrue);
       expect(a.hashCode, equals(b.hashCode));
     });
 
     test('Simple unequals iterable', () {
-      final a = TestClass('value1', ['1', '2'], false, false);
-      final b = TestClass('value1', ['2', '1'], false, false);
+      const a = TestClass('value1', ['1', '2']);
+      const b = TestClass('value1', ['2', '1']);
 
       expect(a == b, isFalse);
       expect(a.hashCode, isNot(b.hashCode));
     });
 
     test('Equals null', () {
-      final a = TestClass('value1', null, false, false);
-      final b = TestClass('value1', [], false, false);
+      const a = TestClass('value1', null);
+      const b = TestClass('value1', []);
 
       expect(a == b, isFalse);
     });
 
     test('Cache hashcode with additional equals', () {
-      final a = TestClass('value1', [], true, true);
-      final b = TestClass('value1', [], true, true);
+      const a = TestClass('value1', []);
+      const b = TestClass('value1', []);
 
       expect(a == b, isTrue);
       b.value2!.add('this is bad');
@@ -105,8 +105,8 @@ void main() {
     });
 
     test('Cache hashcode without additional equals', () {
-      final a = TestClass('value1', [], true, false);
-      final b = TestClass('value1', [], true, false);
+      const a = TestClass('value1', []);
+      const b = TestClass('value1', []);
 
       expect(a == b, isTrue);
       b.value2!.add('this is bad');
@@ -115,8 +115,8 @@ void main() {
     });
 
     test('Uncached hashcode', () {
-      final a = TestClass('value1', [], false, false);
-      final b = TestClass('value1', [], false, false);
+      const a = TestClass('value1', []);
+      const b = TestClass('value1', []);
 
       expect(a == b, isTrue);
       b.value2!.add('add new');
@@ -125,10 +125,10 @@ void main() {
     });
 
     test('Testing identical reference', () {
-      final a = TestClass('value1', [], false, false);
+      const a = TestClass('value1', []);
 
-      final refA = TestRef(a);
-      final refB = TestRef(a);
+      const refA = TestRef(a);
+      const refB = TestRef(a);
 
       expect(refA == refB, isTrue);
       a.value2!.add('add new');
@@ -138,22 +138,18 @@ void main() {
   });
 
   test('Testing extended classes unequal', () {
-    final a = TestClass('d', [], false, false);
-    final b = TestClass(String.fromCharCode(0x64), [], false, false);
+    const a = TestClass('d', []);
+    final b = TestClass(String.fromCharCode(0x64), []);
 
     final c = TestExtClass(
       String.fromCharCode(0x64),
       [],
-      false,
-      false,
       [b],
     );
 
     final d = TestExtClass(
       String.fromCharCode(0x64),
       [],
-      false,
-      false,
       [],
     );
 

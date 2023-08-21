@@ -8,7 +8,7 @@ class FastEquatableCached with FastEquatable {
   final String value1;
   final List<String>? value2;
 
-  FastEquatableCached(this.value1, this.value2);
+  const FastEquatableCached(this.value1, this.value2);
 
   @override
   bool get cacheHash => true;
@@ -21,7 +21,7 @@ class FastEquatableUncached with FastEquatable {
   final String value1;
   final List<String>? value2;
 
-  FastEquatableUncached(this.value1, this.value2);
+  const FastEquatableUncached(this.value1, this.value2);
 
   @override
   bool get cacheHash => false;

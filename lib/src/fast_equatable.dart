@@ -3,10 +3,8 @@ import 'package:fast_equatable/src/i_hash_engine.dart';
 import 'package:fast_equatable/src/jenkins_hash_engine.dart';
 import 'package:meta/meta.dart';
 
-// ignore: missing_override_of_must_be_overridden
+@immutable
 mixin FastEquatable {
-  int? _cachedHash;
-
   /// The additional equality check mitigates hash collisions with an additional
   /// equality check for each parameter, independent from the generated hash.
   ///
@@ -31,10 +29,12 @@ mixin FastEquatable {
   @mustCallSuper
   List<Object?> get hashParameters;
 
+  static final Map<int, int> _hashedCache = {};
   @override
   int get hashCode {
     if (cacheHash) {
-      return _cachedHash ??= hashEngine.calculateHash(hashParameters);
+      return _hashedCache[super.hashCode] ??=
+          hashEngine.calculateHash(hashParameters);
     }
 
     return hashEngine.calculateHash(hashParameters);
