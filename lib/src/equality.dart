@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:fast_equatable/src/data/i_fast_equatable.dart';
+import 'package:fast_equatable/fast_equatable.dart';
 
 const _deepEquality = DeepCollectionEquality();
 
-bool fastEquals(IFastEquatable main, IFastEquatable other) {
+bool fastEquals(FastEquatable main, FastEquatable other) {
   if (main.cacheHash || other.cacheHash) {
     return main.hashCode == other.hashCode &&
         (!(main.additionalEqualityCheck && other.additionalEqualityCheck) ||
@@ -20,7 +20,7 @@ bool fastEquals(IFastEquatable main, IFastEquatable other) {
     final a = params[i];
     final b = otherParams[i];
 
-    if (a is IFastEquatable && b is IFastEquatable) {
+    if (a is FastEquatable && b is FastEquatable) {
       return fastEquals(a, b);
     } else if (_deepEquality.isValidKey(a)) {
       if (!_deepEquality.equals(a, b)) return false;
