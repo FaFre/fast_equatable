@@ -1,3 +1,7 @@
+## 1.1.0
+- Added `mustBeOverriden` and `mustCallSuper` annotation
+- **Potentially Breaking:** Simplify codebase by removing internal `IFastEquatable`
+
 ## 1.0.0
 - Updated to Dart 3
 - Switched from `lints` to `lint`
