@@ -1,3 +1,8 @@
+## 1.2.0
+- Use `xxh3` for `TypedData`
+- Export `secureHash` through `hash.dart`
+- Refactored codebase
+
 ## 1.1.0
 - Added `mustBeOverriden` and `mustCallSuper` annotation
 - **Potentially Breaking:** Simplify codebase by removing internal `IFastEquatable`
