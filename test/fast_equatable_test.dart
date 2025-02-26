@@ -1,9 +1,12 @@
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:fast_equatable/fast_equatable.dart';
 import 'package:test/test.dart';
 
 class TestClass with FastEquatable {
   final String value1;
-  final List<String>? value2;
+  final List<Object>? value2;
 
   TestClass(
     this.value1,
@@ -55,6 +58,8 @@ class TestExtClass extends TestClass {
 }
 
 void main() {
+  final rand = Random();
+
   group('FastEquatable Mixin', () {
     test('Simple equals', () {
       final a = TestClass('value1', null, false, false);
@@ -67,6 +72,29 @@ void main() {
     test('Simple unequals', () {
       final a = TestClass('value1', null, false, false);
       final b = TestClass('value2', null, false, false);
+
+      expect(a == b, isFalse);
+    });
+
+    test('Simple with raw equals', () {
+      final data =
+          Uint64List.fromList(List.generate(10, (_) => rand.nextInt(0xFF)));
+
+      final a = TestClass('value1', data, false, false);
+      final b = TestClass('value1', data, false, false);
+
+      expect(a == b, isTrue);
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('Simple raw unequals', () {
+      final data =
+          Uint8List.fromList(List.generate(10, (_) => rand.nextInt(0xFF)));
+      final data2 =
+          Uint8List.fromList(List.generate(10, (_) => rand.nextInt(0xFF)));
+
+      final a = TestClass('value1', data, false, false);
+      final b = TestClass('value1', data2, false, false);
 
       expect(a == b, isFalse);
     });

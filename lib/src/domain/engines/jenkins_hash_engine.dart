@@ -1,7 +1,5 @@
-import 'package:collection/collection.dart';
 import 'package:fast_equatable/src/domain/engines/abstract/i_hash_engine.dart';
-
-const _deepEquality = DeepCollectionEquality();
+import 'package:fast_equatable/src/helpers/hash.dart';
 
 class JenkinsHashEngine implements IHashEngine {
   const JenkinsHashEngine();
@@ -31,12 +29,12 @@ class JenkinsHashEngine implements IHashEngine {
         '$hashParameters',
       );
     } else if (hashParameters.length == 1) {
-      return _deepEquality.hash(hashParameters.first);
+      return getHash(hashParameters.first);
     }
 
     var hash = 0;
     for (final hashParam in hashParameters) {
-      hash = _add(hash, _deepEquality.hash(hashParam));
+      hash = _add(hash, getHash(hashParam));
     }
 
     return _finish(hash);
