@@ -1,6 +1,6 @@
-import 'package:fast_equatable/src/equality.dart';
-import 'package:fast_equatable/src/i_hash_engine.dart';
-import 'package:fast_equatable/src/jenkins_hash_engine.dart';
+import 'package:fast_equatable/src/domain/engines/abstract/i_hash_engine.dart';
+import 'package:fast_equatable/src/domain/engines/jenkins_hash_engine.dart';
+import 'package:fast_equatable/src/helpers/equality.dart';
 import 'package:meta/meta.dart';
 
 // ignore: missing_override_of_must_be_overridden

@@ -1,4 +1,4 @@
-export 'src/equality.dart';
-export 'src/fast_equatable.dart';
-export 'src/i_hash_engine.dart';
-export 'src/jenkins_hash_engine.dart';
+export 'src/domain/engines/abstract/i_hash_engine.dart';
+export 'src/domain/engines/jenkins_hash_engine.dart';
+export 'src/domain/fast_equatable.dart';
+export 'src/helpers/equality.dart';

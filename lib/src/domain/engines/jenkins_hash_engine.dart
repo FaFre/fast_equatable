@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:fast_equatable/src/i_hash_engine.dart';
+import 'package:fast_equatable/src/domain/engines/abstract/i_hash_engine.dart';
 
 const _deepEquality = DeepCollectionEquality();
 
