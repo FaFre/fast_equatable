@@ -29,12 +29,12 @@ class JenkinsHashEngine implements IHashEngine {
         '$hashParameters',
       );
     } else if (hashParameters.length == 1) {
-      return getHash(hashParameters.first);
+      return secureHash(hashParameters.first);
     }
 
     var hash = 0;
     for (final hashParam in hashParameters) {
-      hash = _add(hash, getHash(hashParam));
+      hash = _add(hash, secureHash(hashParam));
     }
 
     return _finish(hash);

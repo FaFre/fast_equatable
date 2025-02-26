@@ -6,7 +6,7 @@ import 'package:xxh3/xxh3.dart';
 const _deepEquality = DeepCollectionEquality();
 
 @pragma("vm:prefer-inline")
-int getHash(Object? obj) {
+int secureHash(Object? obj) {
   switch (obj) {
     case final Uint8List list:
       return xxh3(list);
