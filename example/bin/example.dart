@@ -1,12 +1,13 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_equatable/fast_equatable.dart';
 
 class FastEquatableCached with FastEquatable {
-  final String value1;
-  final List<String>? value2;
+  final Object value1;
+  final Object? value2;
 
   FastEquatableCached(this.value1, this.value2);
 
@@ -18,8 +19,8 @@ class FastEquatableCached with FastEquatable {
 }
 
 class FastEquatableUncached with FastEquatable {
-  final String value1;
-  final List<String>? value2;
+  final Object value1;
+  final Object? value2;
 
   FastEquatableUncached(this.value1, this.value2);
 
@@ -31,8 +32,8 @@ class FastEquatableUncached with FastEquatable {
 }
 
 class TestClassEquatable extends Equatable {
-  final String value1;
-  final List<String>? value2;
+  final Object value1;
+  final Object? value2;
 
   const TestClassEquatable(this.value1, this.value2);
 
@@ -41,8 +42,8 @@ class TestClassEquatable extends Equatable {
 }
 
 class EquatableBenchmark extends BenchmarkBase {
-  final List<String> _randsValA;
-  final List<String> _randsValB;
+  final List<Object> _randsValA;
+  final List<Object> _randsValB;
 
   late final List<TestClassEquatable> objects;
 
@@ -67,14 +68,14 @@ class EquatableBenchmark extends BenchmarkBase {
 }
 
 class FastEquatableUncachedBenchmark extends BenchmarkBase {
-  final List<String> _randsValA;
-  final List<String> _randsValB;
+  final List<Object> _randsValA;
+  final List<Object> _randsValB;
 
   late final List<FastEquatableUncached> objects;
 
   FastEquatableUncachedBenchmark(this._randsValA, this._randsValB)
       : assert(_randsValA.length == _randsValB.length),
-        super('fast_equatable (uncached) for ${_randsValA.length} elements');
+        super('fast_equatable (mutable) for ${_randsValA.length} elements');
 
   @override
   void setup() {
@@ -93,14 +94,14 @@ class FastEquatableUncachedBenchmark extends BenchmarkBase {
 }
 
 class FastEquatableCachedBenchmark extends BenchmarkBase {
-  final List<String> _randsValA;
-  final List<String> _randsValB;
+  final List<Object> _randsValA;
+  final List<Object> _randsValB;
 
   late final List<FastEquatableCached> objects;
 
   FastEquatableCachedBenchmark(this._randsValA, this._randsValB)
       : assert(_randsValA.length == _randsValB.length),
-        super('fast_equatable (cached) for ${_randsValA.length} elements');
+        super('fast_equatable (immutable) for ${_randsValA.length} elements');
 
   @override
   void setup() {
@@ -119,13 +120,32 @@ class FastEquatableCachedBenchmark extends BenchmarkBase {
 }
 
 void main(List<String> args) {
+  final rand = Random();
+
   const nAcc = 1000000;
 
-  final rand = Random();
   final randsVal1 = List.generate(nAcc, (_) => rand.nextInt(nAcc).toString());
   final randsVal2 = List.generate(nAcc, (_) => rand.nextInt(nAcc).toString());
 
+  const nRawAcc = 10000;
+  const nRawSize = 1000;
+
+  final rawRandsVal1 = List.generate(
+      nRawAcc,
+      (_) => Uint64List.fromList(
+          List.generate(nRawSize, (_) => rand.nextInt(nAcc))));
+  final rawRandsVal2 = List.generate(
+      nRawAcc,
+      (_) => Uint64List.fromList(
+          List.generate(nRawSize, (_) => rand.nextInt(nAcc))));
+
+  print('Running benchmark on list of strings...');
   EquatableBenchmark(randsVal1, randsVal2).report();
   FastEquatableUncachedBenchmark(randsVal1, randsVal2).report();
   FastEquatableCachedBenchmark(randsVal1, randsVal2).report();
+
+  print('Running benchmark on raw data...');
+  EquatableBenchmark(rawRandsVal1, rawRandsVal2).report();
+  FastEquatableUncachedBenchmark(rawRandsVal1, rawRandsVal2).report();
+  FastEquatableCachedBenchmark(rawRandsVal1, rawRandsVal2).report();
 }
