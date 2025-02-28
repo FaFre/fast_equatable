@@ -76,6 +76,21 @@ void main() {
       expect(a == b, isFalse);
     });
 
+    test('Simple value equals', () {
+      final a = EquatableValue(['value1', null, false, false]);
+      final b = EquatableValue(['value1', null, false, false]);
+
+      expect(a == b, isTrue);
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('Simple value unequals', () {
+      final a = EquatableValue(['value1', null, false, false]);
+      final b = EquatableValue(['value2', null, false, false]);
+
+      expect(a == b, isFalse);
+    });
+
     test('Simple with raw equals', () {
       final data =
           Uint64List.fromList(List.generate(10, (_) => rand.nextInt(0xFF)));
