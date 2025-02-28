@@ -19,8 +19,7 @@ mixin FastEquatable {
   ///
   /// Caching makes sense when a lot of equality checks on different objects
   /// are happening
-  @mustBeOverridden
-  bool get cacheHash;
+  bool get cacheHash => true;
 
   /// Allows to use a custom hash engine
   IHashEngine get hashEngine => const JenkinsHashEngine();
