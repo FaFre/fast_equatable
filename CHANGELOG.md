@@ -1,3 +1,7 @@
+## 1.3.0
+- Set `cacheHash` default to `true` e.g. assuming immutability
+- Expose `EquatableValue` wrapper
+
 ## 1.2.0
 - Use `xxh3` for `TypedData`
 - Export `secureHash` through `hash.dart`
