@@ -1,3 +1,6 @@
+## 1.3.1
+- Fix compatibility issue of `xxh3` for web
+
 ## 1.3.0
 - Set `cacheHash` default to `true` e.g. assuming immutability
 - Expose `EquatableValue` wrapper
