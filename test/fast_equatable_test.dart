@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:fast_equatable/fast_equatable.dart';
+import 'package:fast_equatable/hash.dart';
 import 'package:test/test.dart';
 
 class TestClass with FastEquatable {
@@ -36,6 +37,19 @@ class TestRef with FastEquatable {
 
   @override
   List<Object?> get hashParameters => [testClass];
+}
+
+class NestedPair with FastEquatable {
+  final TestClass nested;
+  final String tail;
+
+  NestedPair(this.nested, this.tail);
+
+  @override
+  bool get cacheHash => false;
+
+  @override
+  List<Object?> get hashParameters => [nested, tail];
 }
 
 class TestExtClass extends TestClass {
@@ -144,17 +158,15 @@ void main() {
       expect(a == b, isTrue);
       b.value2!.add('this is bad');
       expect(a != b, isTrue);
-      expect(a.hashCode, equals(b.hashCode));
     });
 
-    test('Cache hashcode without additional equals', () {
+    test('Equality ignores cache and additional equality policy', () {
       final a = TestClass('value1', [], true, false);
-      final b = TestClass('value1', [], true, false);
+      final b = TestClass('value1', [], false, true);
 
       expect(a == b, isTrue);
       b.value2!.add('this is bad');
-      expect(a == b, isTrue);
-      expect(a.hashCode, equals(b.hashCode));
+      expect(a == b, isFalse);
     });
 
     test('Uncached hashcode', () {
@@ -209,5 +221,32 @@ void main() {
     d.additionalParam.add(a);
     expect(c == d, isTrue);
     expect(c.hashCode, equals(d.hashCode));
+  });
+
+  test('Nested FastEquatable values do not skip trailing fields', () {
+    final nestedA = TestClass('value1', ['nested'], false, false);
+    final nestedB = TestClass('value1', ['nested'], true, true);
+
+    final a = NestedPair(nestedA, 'tail-a');
+    final b = NestedPair(nestedB, 'tail-b');
+
+    expect(a == b, isFalse);
+  });
+
+  test('EquatableValue ignores immutable flag for equality', () {
+    final a = EquatableValue(['value1', null], immutable: true);
+    final b = EquatableValue(['value1', null], immutable: false);
+
+    expect(a == b, isTrue);
+    expect(a.hashCode, equals(b.hashCode));
+  });
+
+  test('secureHash respects TypedData view bounds', () {
+    final viewA = ByteData.sublistView(Uint8List.fromList([1, 2, 3, 4]), 1, 3);
+    final viewB = ByteData.sublistView(Uint8List.fromList([9, 2, 3, 8]), 1, 3);
+    final viewC = ByteData.sublistView(Uint8List.fromList([1, 2, 4, 4]), 1, 3);
+
+    expect(secureHash(viewA), equals(secureHash(viewB)));
+    expect(secureHash(viewA), isNot(equals(secureHash(viewC))));
   });
 }

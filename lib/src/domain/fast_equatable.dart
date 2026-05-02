@@ -7,11 +7,13 @@ import 'package:meta/meta.dart';
 mixin FastEquatable {
   int? _cachedHash;
 
-  /// The additional equality check mitigates hash collisions with an additional
-  /// equality check for each parameter, independent from the generated hash.
+  /// Retained for backwards compatibility.
   ///
-  /// It will also check if the objects are still equal and haven't changed since
-  /// caching which shouldn't happen for cached instances.
+  /// Equality always compares [hashParameters] directly.
+  @Deprecated(
+    'Equality always compares hashParameters directly. '
+    'This flag no longer affects ==.',
+  )
   bool get additionalEqualityCheck => true;
 
   /// Whether to cache the hash after first initial calculation
@@ -21,7 +23,13 @@ mixin FastEquatable {
   /// are happening
   bool get cacheHash => true;
 
-  /// Allows to use a custom hash engine
+  /// Allows using a custom hash engine.
+  ///
+  /// To preserve the `==`/`hashCode` contract, equal instances of the same
+  /// runtime type must resolve to the same hash engine behavior.
+  ///
+  /// Equality may use `hashCode` as a fast reject before comparing
+  /// [hashParameters] directly.
   IHashEngine get hashEngine => const JenkinsHashEngine();
 
   /// The instances to generate the hash from and ultimately should uniqely

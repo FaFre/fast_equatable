@@ -1,10 +1,10 @@
 ## Overview
 
-This is a simple Dart package that provides fast and secure equality comparison as a `mixin`. This provides great compatibility to exsiting code.
+This package provides value-based equality as a `mixin` with optional hash caching for immutable objects.
 
-It optionally offers hash caching to improve the speed of e.g. `Map`'s and `Set`'s significantly.
+It can cache `hashCode` values to improve the speed of repeated `Map` and `Set` operations on immutable objects.
 
-By default the widely spread [Jenkins hash function](https://en.wikipedia.org/wiki/Jenkins_hash_function) is used, but you are free to also implement and provide your own hash engine, suiting your needs.
+By default the widely spread [Jenkins hash function](https://en.wikipedia.org/wiki/Jenkins_hash_function) is used, but you can also provide your own hash engine as long as equal instances of the same runtime type use the same hashing behavior.
 
 Objects of any kind are allowed into `hashParameters`. 
 
@@ -12,7 +12,9 @@ Simple types and the standard collections like `List`, `Iterable`, `Map` an `Set
 
 For `TypedData` (e.g. `ByteBuffer`, `Uint8List`) the exteremely fast xxh3 algorithm is used. 
 
-When you use own classes make sure to use the `FastEquatable` mixin as well, or make sure at least `hashCode` and `operator ==` are overriden.
+When you use your own classes make sure to use the `FastEquatable` mixin as well, or make sure at least `hashCode` and `operator ==` are overriden.
+
+`==` is always based on the current values in `hashParameters`. `cacheHash` only affects whether `hashCode` is cached and should therefore only be enabled for immutable objects.
 
 ## Example
 

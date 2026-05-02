@@ -4,10 +4,10 @@ import 'package:fast_equatable/fast_equatable.dart';
 const _deepEquality = DeepCollectionEquality();
 
 bool fastEquals(FastEquatable main, FastEquatable other) {
-  if (main.cacheHash || other.cacheHash) {
-    return main.hashCode == other.hashCode &&
-        (!(main.additionalEqualityCheck && other.additionalEqualityCheck) ||
-            _deepEquality.equals(main.hashParameters, other.hashParameters));
+  if (identical(main, other)) return true;
+
+  if ((main.cacheHash || other.cacheHash) && main.hashCode != other.hashCode) {
+    return false;
   }
 
   final params = main.hashParameters;
@@ -20,16 +20,27 @@ bool fastEquals(FastEquatable main, FastEquatable other) {
     final a = params[i];
     final b = otherParams[i];
 
-    if (a is FastEquatable && b is FastEquatable) {
-      return fastEquals(a, b);
-    } else if (_deepEquality.isValidKey(a)) {
-      if (!_deepEquality.equals(a, b)) return false;
-    } else if (a?.runtimeType != b?.runtimeType) {
-      return false;
-    } else if (a != b) {
-      return false;
-    }
+    if (!_objectsEquals(a, b)) return false;
   }
 
   return true;
+}
+
+@pragma('vm:prefer-inline')
+bool _objectsEquals(Object? a, Object? b) {
+  if (identical(a, b)) return true;
+
+  if (a is FastEquatable && b is FastEquatable) {
+    return a.runtimeType == b.runtimeType && fastEquals(a, b);
+  } else if (a is num && b is num) {
+    return a == b;
+  } else if (a is Iterable && b is Iterable) {
+    return _deepEquality.equals(a, b);
+  } else if (a is Map && b is Map) {
+    return _deepEquality.equals(a, b);
+  } else if (a?.runtimeType != b?.runtimeType) {
+    return false;
+  }
+
+  return a == b;
 }

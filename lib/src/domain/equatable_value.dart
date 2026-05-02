@@ -8,15 +8,11 @@ class EquatableValue<T> with FastEquatable {
   EquatableValue(
     this.value, {
     this.immutable = true,
-    this.hashEngine = const JenkinsHashEngine(),
   });
-
-  @override
-  final IHashEngine hashEngine;
 
   @override
   bool get cacheHash => immutable;
 
   @override
-  List<Object?> get hashParameters => [value, immutable];
+  List<Object?> get hashParameters => [value];
 }

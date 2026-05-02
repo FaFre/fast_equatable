@@ -9,7 +9,9 @@ int secureHashImpl(Object? obj, DeepCollectionEquality equality) {
     case final ByteBuffer buffer:
       return xxh3(buffer.asUint8List());
     case final TypedData data:
-      return xxh3(data.buffer.asUint8List());
+      return xxh3(
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+      );
   }
 
   return equality.hash(obj);
